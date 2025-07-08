@@ -20,4 +20,4 @@ app.use('/user' , userRoutes);
 app.use('/captians', captianRoutes);
 app.use('/maps', mapsRoutes);
 
-module.exports = app;
+module.exports = app; 
