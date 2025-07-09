@@ -33,3 +33,43 @@ module.exports.getAdressCoordinates = async (address) => {
         throw new Error('Failed to fetch coordinates: ' + error.message);
     }
 }
+
+module.exports.getDistanceAndTime = async (origin, destination) => {
+    if(!origin || !destination) {
+        throw new Error('Origin and Destination are required');
+    }
+
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json`;
+    try {
+        const response = await axios.get(url, {
+            params: {
+                origins: origin,
+                destinations: destination,
+                key: apiKey
+            }
+        });
+
+        const data = response.data;
+        if (data.status !== 'OK') {
+            throw new Error('Failed to fetch distance and time');
+        }
+
+        const element = data.rows[0].elements[0];
+        if (element.status !== 'OK') {
+            throw new Error('No distance or time found for the given locations');
+        }
+
+        return {
+            distance: element.distance.text,
+            duration: element.duration.text
+        };
+    } catch (error) {
+        throw new Error('Failed to fetch distance and time: ' + error.message);
+    }
+}
+
+
+
+
